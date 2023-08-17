@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 import 'pages/collection.dart';
 import 'pages/map.dart';
 import 'pages/setting.dart';
 import 'models/router.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
+  await FlutterConfig.loadEnvVariables();
+  FlutterConfig.get('API_KEY');
   runApp(const ProviderScope(
     child: MyApp(),
   ));
