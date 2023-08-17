@@ -26,9 +26,9 @@ class MyApp extends StatefulHookConsumerWidget {
 
 class MyAppState extends ConsumerState<MyApp> {
   static const p = [
-    Setting(),
-    Map(),
     Collection(),
+    Map(),
+    Setting(),
   ];
 
   void onTabTapped(int index) {
@@ -40,6 +40,7 @@ class MyAppState extends ConsumerState<MyApp> {
     Pages pages = ref.watch(pagesProvider);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'GeoColle',
       theme: ThemeData(
         primaryColor: const Color(0xFFD4E3F8),
