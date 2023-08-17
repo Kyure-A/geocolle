@@ -66,6 +66,7 @@ class MyAppState extends ConsumerState<MyApp> {
           onTap: onTabTapped,
         ),
       ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class Map extends StatefulWidget {
   const Map({super.key});
 
@@ -35,75 +37,112 @@ class MapState extends State<Map> {
   final Completer<GoogleMapController> _controller =
   Completer<GoogleMapController>();
 
-  static const CameraPosition _sample = CameraPosition(
-    target: LatLng(35.68399266008331, 139.75461790843423),
-    zoom: 14.4746,
-  );
-
+  static const LatLng defaultLocation = LatLng(35.68399266008331, 139.75461790843423); // 皇居
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: _sample,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            myLocationButtonEnabled: false,
-          ),
-          Positioned.fill(child: Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(top: 40, right: 20, left: 20),
+        body: Stack(
+          children: [
+            FutureBuilder(
+              future: _getCurrentPosition(),
+              builder:  (BuildContext context, AsyncSnapshot<LatLng> response) {
+                if (!response.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              child: Container(
-                height: 100,
-                width: 400,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Row(
+                return Stack(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage('https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
-                      ),
+                    // Google Map は奥に配置されてほしい
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: CameraPosition(
+                          target: response.data ?? defaultLocation, zoom: 17.0),
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                      },
+                      myLocationButtonEnabled: false,
                     ),
-                    Padding(
-                        padding: EdgeInsets.only(top: 25, right: 40, left: 40),
-                        child: Column(
-                          children: [
-                            Text(
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold
+                    // なんか名前とか表示される bar は後
+                    Positioned.fill(child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 40, right: 20, left: 20),
+
+                        child: Container(
+                          height: 100,
+                          width: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage: NetworkImage(
+                                      'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
+                                ),
                               ),
-                              "Kyure_A",
-                            ),
-                            SizedBox(height: 10,),
-                            Row(
-                              children: [
-                                // はみでるので切り捨てたい
-                                Text("Lon: 35.684"),
-                                SizedBox(width: 10),
-                                Text("Lat: 139.76")
-                              ],
-                            )
-                          ],
-                        )
-                    )
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 15, right: 40, left: 60),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        style: TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black54
+                                        ),
+                                        "@Kyure_A",
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Text("Lat: "),
+                                      Text("Lon: "),
+                                    ],
+                                  )
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ))
                   ],
-                ),
-              ),
+                );
+              },
             ),
-          ))
-        ],
-      )
+          ],
+        ),
     );
+  }
+
+  Future<LatLng> _getCurrentPosition() async {
+    bool isEnabled = await Geolocator.isLocationServiceEnabled();;
+    LocationPermission permission;
+
+    if (!isEnabled) {
+      return Future.error('位置情報の権限が無効になっています．');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position currentPosition = await Geolocator.getCurrentPosition();
+    double currentLatitude = currentPosition.latitude;
+    double currentLongitude = currentPosition.longitude;
+
+    return LatLng(currentLatitude, currentLongitude);
   }
 }
