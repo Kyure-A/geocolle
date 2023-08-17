@@ -55,18 +55,47 @@ class MapState extends State<Map> {
           Positioned.fill(child: Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 40),
+              padding: EdgeInsets.only(top: 40, right: 20, left: 20),
 
               child: Container(
                 height: 100,
-                width: 300,
+                width: 400,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Row(
+                child: const Row(
                   children: [
-                    Text("Kyure_A"),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage('https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(top: 25, right: 40, left: 40),
+                        child: Column(
+                          children: [
+                            Text(
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold
+                              ),
+                              "Kyure_A",
+                            ),
+                            SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                // はみでるので切り捨てたい
+                                Text("Lon: 35.684"),
+                                SizedBox(width: 10),
+                                Text("Lat: 139.76")
+                              ],
+                            )
+                          ],
+                        )
+                    )
                   ],
                 ),
               ),
