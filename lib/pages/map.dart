@@ -46,6 +46,10 @@ class MapState extends State<Map> {
             StreamBuilder(
               stream: getCurrentPositionStream(),
               builder:  (BuildContext context, AsyncSnapshot<LatLng> response) {
+                if (response.hasError) {
+                  return Text("Error: ${response.error}");
+                }
+
                 if (!response.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -100,8 +104,8 @@ class MapState extends State<Map> {
                                         "@Kyure_A",
                                       ),
                                       SizedBox(height: 10,),
-                                      Text("Lat: "),
-                                      Text("Lon: "),
+                                      Text("Lat: "), // 動的にかえる
+                                      Text("Lon: "), // 動的にかえる
                                     ],
                                   )
                               )
@@ -118,7 +122,7 @@ class MapState extends State<Map> {
         ),
     );
   }
-  
+
   Stream<LatLng> getCurrentPositionStream() async* {
     while (true) {
       bool isEnabled = await Geolocator.isLocationServiceEnabled();
