@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
