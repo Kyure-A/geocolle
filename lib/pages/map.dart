@@ -22,67 +22,72 @@ class MapState extends State<Map> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: _sample,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          myLocationButtonEnabled: false,
-        ),
-        Positioned.fill(
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _sample,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            myLocationButtonEnabled: false,
+          ),
+          Positioned.fill(
             child: Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
-            child: Container(
-              height: 100,
-              width: 400,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage(
-                          'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
-                    ),
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
+                child: Container(
+                  height: 100,
+                  width: 400,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 25, right: 40, left: 40),
-                    child: Column(
-                      children: [
-                        Text(
-                          style: TextStyle(
-                              fontSize: 26, fontWeight: FontWeight.bold),
-                          "Kyure_A",
+                  child: Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(
+                              'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 25, right: 40, left: 40),
+                        child: Column(
                           children: [
-                            // はみでるので切り捨てたい
-                            Text("Lon: 35.684"),
-                            SizedBox(width: 10),
-                            Text("Lat: 139.76")
+                            Text(
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: ThemeData().unselectedWidgetColor,
+                              ),
+                              "Kyure_A",
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Row(
+                              children: [
+                                // はみでるので切り捨てたい
+                                Text("Lon: 35.684"),
+                                SizedBox(width: 10),
+                                Text("Lat: 139.76")
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  )
-                ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ))
-      ],
-    ));
+          )
+        ],
+      ),
+    );
   }
 }
