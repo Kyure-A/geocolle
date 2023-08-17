@@ -43,8 +43,8 @@ class MapState extends State<Map> {
     return Scaffold(
         body: Stack(
           children: [
-            FutureBuilder(
-              future: _getCurrentPosition(),
+            StreamBuilder(
+              stream: getCurrentPositionStream(),
               builder:  (BuildContext context, AsyncSnapshot<LatLng> response) {
                 if (!response.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -118,31 +118,37 @@ class MapState extends State<Map> {
         ),
     );
   }
+  
+  Stream<LatLng> getCurrentPositionStream() async* {
+    while (true) {
+      bool isEnabled = await Geolocator.isLocationServiceEnabled();
+      LocationPermission permission;
 
-  Future<LatLng> _getCurrentPosition() async {
-    bool isEnabled = await Geolocator.isLocationServiceEnabled();;
-    LocationPermission permission;
-
-    if (!isEnabled) {
-      return Future.error('位置情報の権限が無効になっています．');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+      if (!isEnabled) {
+        yield* Stream.error('位置情報の権限が無効になっています．');
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
 
-    Position currentPosition = await Geolocator.getCurrentPosition();
-    double currentLatitude = currentPosition.latitude;
-    double currentLongitude = currentPosition.longitude;
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          yield* Stream.error('Location permissions are denied');
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        yield* Stream.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
 
-    return LatLng(currentLatitude, currentLongitude);
+      Position currentPosition = await Geolocator.getCurrentPosition();
+      double currentLatitude = currentPosition.latitude;
+      double currentLongitude = currentPosition.longitude;
+
+      yield LatLng(currentLatitude, currentLongitude);
+
+      // Add a delay before checking for the next position update
+      await Future.delayed(Duration(seconds: 1));
+    }
   }
+
 }
