@@ -99,13 +99,23 @@ class MapState extends State<Map> {
                                         style: TextStyle(
                                             fontSize: 26,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black54
+                                            color: Colors.grey
                                         ),
-                                        "@Kyure_A",
+                                        "@username",
                                       ),
                                       SizedBox(height: 10,),
-                                      Text("Lat: "), // 動的にかえる
-                                      Text("Lon: "), // 動的にかえる
+                                      Text(
+                                        style: TextStyle(
+                                          color: Colors.grey
+                                        ),
+                                          "Lat: "
+                                      ),
+                                      Text(
+                                          style: TextStyle(
+                                              color: Colors.grey
+                                          ),
+                                          "Lon: "
+                                      ),// 動的にかえる
                                     ],
                                   )
                               )
