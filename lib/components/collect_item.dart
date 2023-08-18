@@ -27,9 +27,10 @@ class CollectItem extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 4, bottom: 4),
-          child: CircleAvatar(
-            radius: 24,
-            backgroundImage: NetworkImage(image),
+          child: Image.network(
+            image,
+            width: 48,
+            height: 48,
           ),
         ),
         ClipRRect(
