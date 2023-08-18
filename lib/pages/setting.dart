@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocolle/models/lang.dart';
+import 'package:geocolle/models/prefecture.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:geocolle/models/user.dart';
@@ -64,18 +65,18 @@ class SettingState extends ConsumerState<Setting> {
             ),
             "About",
           ),
-          const Row(
+          Row(
             children: [
-              Text(
+              const Text(
                 "出身地",
                 style: TextStyle(
                   backgroundColor: Color.fromRGBO(175, 230, 250, 100.0),
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Lisp_logo.svg/512px-Lisp_logo.svg.png",
+                  prefectureList[user.from]!,
                 ),
               )
             ],
