@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocolle/models/prefecture.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:geocolle/models/lang.dart';
@@ -15,6 +16,7 @@ class Login extends StatefulHookConsumerWidget {
 class LoginState extends ConsumerState<Login> {
   String _id = "";
   String _name = "";
+  String? _from = prefectureList.keys.first;
   String? _likeLanguage = languagesList.keys.first;
   String? _dislikeLanguage = languagesList.keys.first;
 
@@ -34,7 +36,7 @@ class LoginState extends ConsumerState<Login> {
             const Text('Login'),
             TextField(
               enabled: true,
-              maxLength: 7,
+              maxLength: 20,
               obscureText: false,
               maxLines: 1,
               decoration: const InputDecoration(
@@ -55,6 +57,28 @@ class LoginState extends ConsumerState<Login> {
               onChanged: (String value) {
                 _name = value;
               },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('出身地'),
+                DropdownButton(
+                  items: prefectureList.entries
+                      .map(
+                        (e) => DropdownMenuItem<String>(
+                          value: e.key,
+                          child: Text(e.key),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _from = value;
+                    });
+                  },
+                  value: _from,
+                ),
+              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,7 +131,7 @@ class LoginState extends ConsumerState<Login> {
                   name: _name,
                   like: _likeLanguage,
                   dislike: _dislikeLanguage,
-                  from: '',
+                  from: _from,
                 );
                 ref.read(pagesProvider.notifier).state = Pages.map;
               },
