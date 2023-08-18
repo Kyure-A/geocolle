@@ -1,3 +1,4 @@
+import 'package:geocolle/models/lang.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class User {
