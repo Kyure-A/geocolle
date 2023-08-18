@@ -1,17 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
-class Map extends StatefulWidget {
+import 'package:geocolle/models/user.dart';
+
+class Map extends StatefulHookConsumerWidget {
   const Map({super.key});
 
   @override
-  State<Map> createState() => MapState();
+  MapState createState() => MapState();
 }
 
-class MapState extends State<Map> {
+class MapState extends ConsumerState<Map> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -19,6 +22,8 @@ class MapState extends State<Map> {
       LatLng(35.68399266008331, 139.75461790843423); // 皇居
   @override
   Widget build(BuildContext context) {
+    User user = ref.watch(userProvider);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -74,12 +79,12 @@ class MapState extends State<Map> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      style: TextStyle(
+                                    Text(
+                                      style: const TextStyle(
                                           fontSize: 26,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.grey),
-                                      "@username",
+                                      "@${user.id}",
                                     ),
                                     const SizedBox(
                                       height: 10,
