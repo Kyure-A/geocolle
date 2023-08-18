@@ -47,56 +47,62 @@ class MapState extends State<Map> {
                   ),
                   // なんか名前とか表示される bar は後
                   Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 40, right: 20, left: 20),
-                      child: Container(
-                        height: 100,
-                        width: 400,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: CircleAvatar(
-                                radius: 40,
-                                backgroundImage: NetworkImage(
-                                    'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 40, right: 20, left: 20),
+                        child: Container(
+                          height: 100,
+                          width: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage: NetworkImage(
+                                      'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
+                                ),
                               ),
-                            ),
-                            Padding(
-                                padding: EdgeInsets.only(
+                              Padding(
+                                padding: const EdgeInsets.only(
                                     top: 15, right: 40, left: 60),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       style: TextStyle(
                                           fontSize: 26,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.grey),
                                       "@username",
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 10,
                                     ),
                                     Text(
-                                        style: TextStyle(color: Colors.grey),
-                                        "Lat: ${response.data!.latitude.toStringAsFixed(5)}"),
+                                      style:
+                                          const TextStyle(color: Colors.grey),
+                                      "Lat: ${response.data!.latitude.toStringAsFixed(5)}",
+                                    ),
                                     Text(
-                                        style: TextStyle(color: Colors.grey),
-                                        "Lon: ${response.data!.longitude.toStringAsFixed(5)}"), // 動的にかえる
+                                      style:
+                                          const TextStyle(color: Colors.grey),
+                                      "Lon: ${response.data!.longitude.toStringAsFixed(5)}",
+                                    ), // 動的にかえる
                                   ],
-                                ))
-                          ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ))
+                  )
                 ],
               );
             },
@@ -134,7 +140,7 @@ class MapState extends State<Map> {
       yield LatLng(currentLatitude, currentLongitude);
 
       // Add a delay before checking for the next position update
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
     }
   }
 }

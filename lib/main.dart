@@ -45,8 +45,18 @@ class MyAppState extends ConsumerState<MyApp> {
       theme: ThemeData(
         primaryColor: const Color(0xFFD4E3F8),
         primaryColorDark: const Color(0xFF8BAADA),
+        unselectedWidgetColor: const Color(0xFF797785),
       ),
       home: Scaffold(
+        appBar: pages == Pages.collection
+            ? AppBar(
+                title: const Text('Collection'),
+                backgroundColor: Colors.white,
+                foregroundColor: ThemeData().unselectedWidgetColor,
+                elevation: 0.0,
+                toolbarHeight: 50,
+              )
+            : null,
         body: p[pages.index],
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: ThemeData().primaryColorDark,
