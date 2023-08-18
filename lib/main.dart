@@ -6,7 +6,9 @@ import 'package:flutter_config/flutter_config.dart';
 import 'pages/collection.dart';
 import 'pages/map.dart';
 import 'pages/setting.dart';
+import 'pages/login.dart';
 import 'models/router.dart';
+import 'models/user.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
@@ -29,6 +31,7 @@ class MyAppState extends ConsumerState<MyApp> {
     Collection(),
     Map(),
     Setting(),
+    Login(),
   ];
 
   void onTabTapped(int index) {
@@ -38,6 +41,11 @@ class MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     Pages pages = ref.watch(pagesProvider);
+    User user = ref.watch(userProvider);
+
+    if (user.id == null && pages != Pages.login) {
+      pages = Pages.login;
+    }
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -58,28 +66,31 @@ class MyAppState extends ConsumerState<MyApp> {
               )
             : null,
         body: p[pages.index],
-        bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: ThemeData().primaryColorDark,
-          items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/collection.svg'),
-              activeIcon: SvgPicture.asset('assets/collection_active.svg'),
-              label: 'Collection',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/map.svg'),
-              activeIcon: SvgPicture.asset('assets/map_active.svg'),
-              label: 'Map',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/setting.svg'),
-              activeIcon: SvgPicture.asset('assets/setting_active.svg'),
-              label: 'Setting',
-            ),
-          ],
-          currentIndex: pages.index,
-          onTap: onTabTapped,
-        ),
+        bottomNavigationBar: pages == Pages.login
+            ? null
+            : BottomNavigationBar(
+                selectedItemColor: ThemeData().primaryColorDark,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset('assets/collection.svg'),
+                    activeIcon:
+                        SvgPicture.asset('assets/collection_active.svg'),
+                    label: 'Collection',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset('assets/map.svg'),
+                    activeIcon: SvgPicture.asset('assets/map_active.svg'),
+                    label: 'Map',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset('assets/setting.svg'),
+                    activeIcon: SvgPicture.asset('assets/setting_active.svg'),
+                    label: 'Setting',
+                  ),
+                ],
+                currentIndex: pages.index,
+                onTap: onTabTapped,
+              ),
       ),
     );
   }
