@@ -75,7 +75,10 @@ class MapState extends ConsumerState<Map> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 15, right: 40, left: 60),
+                                  top: 15,
+                                  right: 40,
+                                  left: 60,
+                                ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -90,15 +93,17 @@ class MapState extends ConsumerState<Map> {
                                       height: 10,
                                     ),
                                     Text(
-                                      style:
-                                          const TextStyle(color: Colors.grey),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
                                       "Lat: ${response.data!.latitude.toStringAsFixed(5)}",
                                     ),
                                     Text(
-                                      style:
-                                          const TextStyle(color: Colors.grey),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
                                       "Lon: ${response.data!.longitude.toStringAsFixed(5)}",
-                                    ), // 動的にかえる
+                                    ),
                                   ],
                                 ),
                               )
