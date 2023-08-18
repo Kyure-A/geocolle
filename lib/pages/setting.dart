@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocolle/models/lang.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:geocolle/models/user.dart';
@@ -74,37 +75,37 @@ class SettingState extends ConsumerState<Setting> {
               SizedBox(width: 30),
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  "https://illustimage.com/photo/dl/545.png?20160706",
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Lisp_logo.svg/512px-Lisp_logo.svg.png",
                 ),
               )
             ],
           ),
-          const Row(
+          Row(
             children: [
-              Text(
+              const Text(
                 "好きな言語",
                 style: TextStyle(
                   backgroundColor: Color.fromRGBO(175, 230, 250, 100.0),
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/EmacsIcon.svg/1024px-EmacsIcon.svg.png",
+                  languagesList[user.like]!,
                 ),
               )
             ],
           ),
-          const Row(
+          Row(
             children: [
-              Text("嫌いな言語",
+              const Text("嫌いな言語",
                   style: TextStyle(
                     backgroundColor: Color.fromRGBO(175, 230, 250, 100.0),
                   )),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/python/python.png",
+                  languagesList[user.dislike]!,
                 ),
               )
             ],
