@@ -79,7 +79,7 @@ class MapState extends State<Map> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(left: 10),
@@ -108,13 +108,13 @@ class MapState extends State<Map> {
                                         style: TextStyle(
                                           color: Colors.grey
                                         ),
-                                          "Lat: "
+                                          "Lat: ${response.data!.latitude.toStringAsFixed(5)}"
                                       ),
                                       Text(
                                           style: TextStyle(
                                               color: Colors.grey
                                           ),
-                                          "Lon: "
+                                          "Lon: ${response.data!.longitude.toStringAsFixed(5)}"
                                       ),// 動的にかえる
                                     ],
                                   )
