@@ -4,6 +4,7 @@ import 'package:geocolle/models/prefecture.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:geocolle/models/user.dart';
+import 'package:geocolle/models/title.dart';
 
 class Setting extends StatefulHookConsumerWidget {
   const Setting({super.key});
@@ -23,10 +24,11 @@ class SettingState extends ConsumerState<Setting> {
     User user = ref.watch(userProvider);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 50, left: 30),
+      padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Profile
           Text(
             style: TextStyle(
               fontSize: 24,
@@ -36,89 +38,138 @@ class SettingState extends ConsumerState<Setting> {
             "Profile",
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const CircleAvatar(
-                  radius: 40,
+                CircleAvatar(
+                  radius: 32,
                   backgroundImage: NetworkImage(
-                    'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg',
+                    'https://github.com/${user.name}.png',
                   ),
                 ),
                 const SizedBox(width: 20),
                 Text(
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style: TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: ThemeData().unselectedWidgetColor,
                   ),
-                  "@${user.id}",
+                  "@ ${user.id}",
                 ),
               ],
             ),
           ),
-          const Text(
+          // About
+          Text(
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: ThemeData().unselectedWidgetColor,
             ),
             "About",
           ),
-          Row(
-            children: [
-              const Text(
-                "出身地",
-                style: TextStyle(
-                  backgroundColor: Color.fromRGBO(175, 230, 250, 100.0),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                // 出身地
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: ThemeData().primaryColorLight,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                              child: Text("出身地"),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Image.network(
+                          prefectureList[user.from]!,
+                          width: 50,
+                          height: 50,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 30),
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  prefectureList[user.from]!,
+                // 好きな言語
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: ThemeData().primaryColorLight,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                              child: Text("好きな言語"),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Image.network(
+                          languagesList[user.like]!,
+                          width: 50,
+                          height: 50,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
+                // 嫌いな言語
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: ThemeData().primaryColorLight,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                              child: Text("嫌いな言語"),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Image.network(
+                          languagesList[user.dislike]!,
+                          width: 50,
+                          height: 50,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              const Text(
-                "好きな言語",
-                style: TextStyle(
-                  backgroundColor: Color.fromRGBO(175, 230, 250, 100.0),
-                ),
-              ),
-              const SizedBox(width: 30),
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  languagesList[user.like]!,
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              const Text("嫌いな言語",
-                  style: TextStyle(
-                    backgroundColor: Color.fromRGBO(175, 230, 250, 100.0),
-                  )),
-              const SizedBox(width: 30),
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  languagesList[user.dislike]!,
-                ),
-              )
-            ],
-          ),
-          const Text(
+          Text(
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: ThemeData().unselectedWidgetColor,
             ),
             "Records",
-          ), // すれ違ったら草を生やす
+          ),
         ],
       ),
     );
