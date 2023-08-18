@@ -4,6 +4,7 @@ enum Pages {
   collection,
   map,
   setting,
+  login,
 }
 
-final pagesProvider = StateProvider<Pages>((ref) => Pages.map);
+final pagesProvider = StateProvider<Pages>((ref) => Pages.login);
