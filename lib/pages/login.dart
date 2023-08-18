@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocolle/models/prefecture.dart';
+import 'package:geocolle/models/user_collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart' as http;
@@ -46,7 +47,6 @@ class LoginState extends ConsumerState<Login> {
       );
 
       if (jsonRespose.statusCode == 200) {
-        print(jsonRespose.body);
         var response = jsonDecode(jsonRespose.body);
         ref.read(userProvider.notifier).state = User(
           id: response['id'],
@@ -55,11 +55,28 @@ class LoginState extends ConsumerState<Login> {
           dislike: response['dislike'],
           from: response['from'],
         );
+
+        var jsonResponse = await http.get(
+          Uri.https(
+              FlutterConfig.get('API_ENDPOINT'), "info/${response['id']}"),
+        );
+
+        response = jsonDecode(jsonResponse.body);
+
+        Map<String, int> like = {};
+        response['likeCollection'].forEach((key, value) {
+          like[key] = value;
+        });
+
+        ref.read(userCollectionProvider.notifier).state = UserCollection(
+          like: like,
+          dislike: {},
+          from: {},
+        );
+
         ref.read(pagesProvider.notifier).state = Pages.map;
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   @override

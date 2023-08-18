@@ -55,7 +55,8 @@ class MapState extends ConsumerState<Map> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Padding(
-                        padding: EdgeInsets.only(top: 40, right: 20, left: 20),
+                        padding:
+                            const EdgeInsets.only(top: 40, right: 20, left: 20),
                         child: Container(
                           height: 100,
                           width: 400,
