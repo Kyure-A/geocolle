@@ -36,7 +36,7 @@ class CollectItem extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: LinearProgressIndicator(
-            value: rate / 100,
+            value: rate / 10,
             backgroundColor: ThemeData().unselectedWidgetColor,
             valueColor: AlwaysStoppedAnimation<Color>(
               ThemeData().primaryColor,

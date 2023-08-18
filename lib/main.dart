@@ -36,6 +36,11 @@ class MyAppState extends ConsumerState<MyApp> {
   ];
 
   void onTabTapped(int index) {
+    if (index == Pages.setting.index) {
+      ref.read(titleProvider.notifier).state = "Setting";
+    } else if (index == Pages.collection.index) {
+      ref.read(titleProvider.notifier).state = "好きな言語";
+    }
     ref.read(pagesProvider.notifier).state = Pages.values[index];
   }
 
@@ -53,12 +58,12 @@ class MyAppState extends ConsumerState<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'GeoColle',
       theme: ThemeData(
-        primaryColor: const Color(0xFFD4E3F8),
+        primaryColorLight: const Color(0xFFD4E3F8),
         primaryColorDark: const Color(0xFF8BAADA),
         unselectedWidgetColor: const Color(0xFF797785),
       ),
       home: Scaffold(
-        appBar: pages == Pages.collection
+        appBar: pages == Pages.collection || pages == Pages.setting
             ? AppBar(
                 title: Text(title),
                 backgroundColor: Colors.white,
