@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:geocolle/models/lang.dart';
-import 'package:geocolle/models/prefecture.dart';
-import 'package:geocolle/models/user_collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:geocolle/components/collect_item.dart';
-import 'package:geocolle/models/title.dart';
+import 'package:geocolle/models/user.dart';
+import 'package:geocolle/models/lang.dart';
+import 'package:geocolle/models/user_collection.dart';
 
 class Collection extends StatefulHookConsumerWidget {
   const Collection({super.key});
@@ -15,20 +17,22 @@ class Collection extends StatefulHookConsumerWidget {
 }
 
 class CollectionState extends ConsumerState<Collection> {
-  int pageCounter = 2;
+  Future<Map<String, int>> content() async {
+    Map<String, int> content = {};
+    try {
+      var jsonRes = await http.get(
+        Uri.https(FlutterConfig.get('API_ENDPOINT'),
+            "info/${ref.read(userProvider).id}"),
+      );
 
-  void setPageTitle() {
-    switch (pageCounter) {
-      case 0:
-        ref.read(titleProvider.notifier).state = "好きな言語";
-        break;
-      case 1:
-        ref.read(titleProvider.notifier).state = "嫌いな言語";
-        break;
-      case 2:
-        ref.read(titleProvider.notifier).state = "出身地";
-        break;
+      if (jsonRes.statusCode == 200) {
+        var res = jsonDecode(jsonRes.body);
+        content = res['likeCollection'].cast<String, int>();
+      }
+    } catch (e) {
+      print(e);
     }
+    return content;
   }
 
   @override
@@ -38,50 +42,11 @@ class CollectionState extends ConsumerState<Collection> {
 
   @override
   Widget build(BuildContext context) {
-    UserCollection userCollection = ref.watch(userCollectionProvider);
-
-    var page = [
-      languagesList.entries
-          .map((e) => Center(
-                child: CollectItem(
-                  name: e.key,
-                  image: e.value,
-                  rate: userCollection.like[e.key] ?? 0,
-                ),
-              ))
-          .toList(),
-      languagesList.entries
-          .map(
-            (e) => Center(
-              child: CollectItem(
-                name: e.key,
-                image: e.value,
-                rate: userCollection.dislike[e.key] ?? 0,
-              ),
-            ),
-          )
-          .toList(),
-      prefectureList.entries
-          .map(
-            (e) => Center(
-              child: CollectItem(
-                name: e.key,
-                image: e.value,
-                rate: userCollection.from[e.key] ?? 0,
-              ),
-            ),
-          )
-          .toList(),
-    ];
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton(
-          onPressed: () => setState(() {
-            pageCounter == 0 ? pageCounter = 2 : pageCounter--;
-            setPageTitle();
-          }),
+          onPressed: () => setState(() {}),
           style: ButtonStyle(
             minimumSize: MaterialStateProperty.all<Size>(const Size(48, 48)),
           ),
@@ -90,19 +55,37 @@ class CollectionState extends ConsumerState<Collection> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 48),
-            child: GridView.count(
-              crossAxisCount: 3,
-              crossAxisSpacing: 24,
-              mainAxisSpacing: 48,
-              children: page[pageCounter],
+            child: FutureBuilder<Map<String, int>>(
+              future: content(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return const Center(
+                    child: Text('Error'),
+                  );
+                } else {
+                  return GridView.count(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 24,
+                    mainAxisSpacing: 48,
+                    children: languagesList.entries
+                        .map(
+                          (e) => Center(
+                            child: CollectItem(
+                              name: e.key,
+                              image: e.value,
+                              rate: snapshot.data![e.key] ?? 0,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  );
+                }
+              },
             ),
           ),
         ),
         TextButton(
-          onPressed: () => setState(() {
-            pageCounter == 2 ? pageCounter = 0 : pageCounter++;
-            setPageTitle();
-          }),
+          onPressed: () => setState(() {}),
           style: ButtonStyle(
             minimumSize: MaterialStateProperty.all<Size>(const Size(48, 48)),
           ),

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:geocolle/models/user.dart';
 
@@ -28,7 +31,7 @@ class MapState extends ConsumerState<Map> {
       body: Stack(
         children: [
           StreamBuilder(
-            stream: getCurrentPositionStream(),
+            stream: getCurrentPositionStream(user.id!),
             builder: (BuildContext context, AsyncSnapshot<LatLng> response) {
               if (response.hasError) {
                 return Text("Error: ${response.error}");
@@ -66,12 +69,13 @@ class MapState extends ConsumerState<Map> {
                           ),
                           child: Row(
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 10),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
                                 child: CircleAvatar(
                                   radius: 40,
                                   backgroundImage: NetworkImage(
-                                      'https://raw.githubusercontent.com/Kyure-A/avatar/master/kyure_a.jpg'),
+                                    'https://github.com/${user.name}.png',
+                                  ),
                                 ),
                               ),
                               Padding(
@@ -123,7 +127,28 @@ class MapState extends ConsumerState<Map> {
     );
   }
 
-  Stream<LatLng> getCurrentPositionStream() async* {
+  void postLocation(double lat, double lon, String userID) async {
+    try {
+      var jsonResponse = await http.post(
+        Uri.https(FlutterConfig.get('API_ENDPOINT'), "pos"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json'
+        },
+        body: jsonEncode({
+          'id': userID,
+          'lat': lat.toInt(),
+          'lon': lon.toInt(),
+        }),
+      );
+      print(jsonResponse.body);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<LatLng> getCurrentPositionStream(String userID) async* {
+    var count = 0;
     while (true) {
       bool isEnabled = await Geolocator.isLocationServiceEnabled();
       LocationPermission permission;
@@ -147,6 +172,12 @@ class MapState extends ConsumerState<Map> {
       Position currentPosition = await Geolocator.getCurrentPosition();
       double currentLatitude = currentPosition.latitude;
       double currentLongitude = currentPosition.longitude;
+      if (count >= 5) {
+        postLocation(currentLatitude, currentLongitude, userID);
+        count = 0;
+      } else {
+        count++;
+      }
 
       yield LatLng(currentLatitude, currentLongitude);
 
