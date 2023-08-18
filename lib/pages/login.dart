@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geocolle/models/prefecture.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:geocolle/models/lang.dart';
 import 'package:geocolle/models/router.dart';
@@ -23,6 +26,40 @@ class LoginState extends ConsumerState<Login> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void getData() async {
+    try {
+      var jsonRespose = await http.post(
+        Uri.https(FlutterConfig.get('API_ENDPOINT'), "info"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json'
+        },
+        body: jsonEncode({
+          'id': _id,
+          'name': _name,
+          'like': _likeLanguage!,
+          'dislike': _dislikeLanguage!,
+          'from': _from!,
+        }),
+      );
+
+      if (jsonRespose.statusCode == 200) {
+        print(jsonRespose.body);
+        var response = jsonDecode(jsonRespose.body);
+        ref.read(userProvider.notifier).state = User(
+          id: response['id'],
+          name: response['name'],
+          like: response['like'],
+          dislike: response['dislike'],
+          from: response['from'],
+        );
+        ref.read(pagesProvider.notifier).state = Pages.map;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -126,14 +163,7 @@ class LoginState extends ConsumerState<Login> {
             ),
             ElevatedButton(
               onPressed: () {
-                ref.read(userProvider.notifier).state = User(
-                  id: _id,
-                  name: _name,
-                  like: _likeLanguage,
-                  dislike: _dislikeLanguage,
-                  from: _from,
-                );
-                ref.read(pagesProvider.notifier).state = Pages.map;
+                getData();
               },
               child: const Text("Login"),
             ),
