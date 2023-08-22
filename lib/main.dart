@@ -14,7 +14,7 @@ import 'models/title.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
   await FlutterConfig.loadEnvVariables();
-  //FlutterConfig.get('API_KEY');
+  FlutterConfig.get('API_KEY');
   runApp(const ProviderScope(
     child: MyApp(),
   ));
